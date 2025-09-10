@@ -19,7 +19,12 @@ router.patch('/:id', authenticateToken, bookingsController.editBooking);
 // Cancel booking (user)
 router.delete('/:id', authenticateToken, bookingsController.cancelBooking);
 
+router.get('/calendar', authenticateToken, bookingsController.getCalendarBookings);
+
 // Check room availability (public/user)
 router.get('/availability', bookingsController.checkAvailability);
+
+//stats
+router.get('/stats', authenticateToken, authorizeRoles('admin'), bookingsController.getBookingStats);
 
 module.exports = router;

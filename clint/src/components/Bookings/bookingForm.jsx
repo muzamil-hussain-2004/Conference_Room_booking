@@ -12,8 +12,24 @@ export default function BookingForm() {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+
+    const checkAvailability = async () => {
+        try {
+            const res = await api.get(`/bookings/availability?id=${room_id}&start_time=${start}&end_time=${end}`);
+                return res.data.available;
+        } catch (error) {
+            return false;
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const available = await checkAvailability();
+        if (!available) {
+            setError("Room is not available for the selected time.");
+            setMsg("");
+            return;
+        }
         try {
             const token = localStorage.getItem("token");
             await api.post("/bookings", 

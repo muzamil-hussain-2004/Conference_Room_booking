@@ -53,16 +53,30 @@ exports.getMyBookings = async (req, res) => {
 
 //Admin View all bookings 
 exports.getAllBookings = async (req, res) => {
+    const { room_id, user_id, date } = req.query;
+    let query = `SELECT bookings.*, users.email, rooms.name AS room_name FROM bookings
+   JOIN users ON bookings.user_id = users.id
+   JOIN rooms ON bookings.room_id = rooms.id
+   WHERE 1=1`;
+    let params = [];
+    if (room_id) {
+        query += ` AND bookings.room_id = $${params.length + 1}`;
+        params.push(room_id);
+    }
+    if (user_id) {
+        query += ` AND bookings.user_id = $${params.length + 1}`;
+        params.push(user_id);
+    }
+    if (date) {
+        query += ` AND DATE(bookings.start_time) = $${params.length + 1}`;
+        params.push(date);
+    }
+    query += " ORDER BY bookings.start_time DESC";
     try {
-        const result = await db.query(
-            `SELECT bookings.*, users.email, rooms.name AS room_name FROM bookings
-            JOIN users ON bookings.user_id = users.id
-            JOIN rooms ON bookings.room_id = rooms.id
-            ORDER BY start_time DESC`
-        );
+        const result = await db.query(query, params);
         res.json(result.rows);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch bookings.' });
+        res.status(500).json({ error: "FAILED to fetch bookings." });
     }
 };
 
@@ -72,15 +86,17 @@ exports.editBooking = async (req, res) => {
     const { id } = req.params;
     const { start_time, end_time } = req.body;
     try {
-        // Check for overlapping bookings
+        // Get the room_id for this booking
         const booking = await db.query('SELECT room_id FROM bookings WHERE id = $1 AND user_id = $2',
             [id, req.user.id]);
-        if (!booking.rows.length) return res.status(404).json({ error: 'Booking not fount.' });
+        if (!booking.rows.length) return res.status(404).json({ error: 'Booking not found.' });
         const room_id = booking.rows[0].room_id;
 
+        // Check for overlapping bookings (exclude current booking)
         const conflict = await db.query(
             `SELECT * FROM bookings WHERE room_id = $1 AND status = 'confirmed'
-            AND NOT (end_time <= $2 OR start_time >= $3)`,
+            AND id != $2
+            AND NOT (end_time <= $3 OR start_time >= $4)`,
             [room_id, id, start_time, end_time]
         );
         if (conflict.rows.length) return res.status(400).json({ error: 'Room already booked for this time.' });
@@ -121,5 +137,47 @@ exports.checkAvailability = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: 'Failed to check availability.' });
     }
-}
+};
+
+exports.getCalendarBookings = async (req, res) => {
+    const { room_id, date } = req.query;
+    let query = `SELECT bookings.*, rooms.name AS room_name FROM bookings
+    JOIN rooms ON bookings.room_id = rooms.id WHERE bookings.status != 'cancelled'`;
+    let params = [];
+    if (room_id) {
+        query += " AND bookings.room_id = $" + (params.length + 1);
+        params.push(room_id);
+    }
+    if (date) {
+        query += " AND DATE(bookings.start_time) = $" + (params.length + 1);
+        params.push(date);
+    }
+    query += " ORDER BY bookings.start_time ASC";
+    try {
+        const result = await db.query(query, params);
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch bookings.' });
+    }
+};
+
+
+exports.getBookingStats = async (req, res) => {
+    try {
+        const total = await db.query("SELECT COUNT(*) FROM bookings WHERE status = 'confirmed'");
+        const byRoom = await db.query(
+            "SELECT rooms.name, COUNT(*) FROM bookings JOIN rooms ON bookings.room_id = rooms.id WHERE bookings.status = 'confirmed' GROUP BY rooms.name"
+        );
+        const byUser = await db.query(
+            "SELECT users.email, COUNT(*) FROM bookings JOIN users ON bookings.user_id = users.id WHERE bookings.status = 'confirmed' GROUP BY users.email"
+        );
+        res.json({
+            total: total.rows[0].count,
+            byRoom: byRoom.rows,
+            byUser: byUser.rows
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch stats.' });
+    }
+};
 

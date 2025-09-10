@@ -66,9 +66,9 @@ export default function Dashboard() {
               </button>
               <button
                 className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 transition"
-                onClick={() => navigate("/admin/rooms/new")}
+                onClick={() => navigate("/admin/rooms")}
               >
-                Add Room
+                Manage Rooms
               </button>
               <button
                 className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 transition"
@@ -88,7 +88,12 @@ export default function Dashboard() {
               >
                 Assign Facility to Room
               </button>
-
+              <button
+                className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700 transition"
+                onClick={() => navigate("/admin/analytics")}
+              >
+                View Stats
+              </button>
             </>
           )}
         </div>

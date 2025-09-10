@@ -19,6 +19,7 @@ import AssignFacility from "../Admin/AssignFacility";
 import AdminRoomList from "../Admin/AdminRoomList";
 import AdminBookingList from "../Admin/AdminBookingList";
 import AdminUserBookings from "../Admin/AdminUserBookings";
+import AdminAnalytics from "../Admin/AdminAnalytics";
 
 export default function AppRoutes() {
   return (
@@ -73,6 +74,11 @@ export default function AppRoutes() {
       <Route path="/admin/users/:id/bookings" element={
         <ProtectedRoute role="admin">
           <AdminUserBookings />
+        </ProtectedRoute>
+      } />
+      <Route path="/admin/analytics" element={
+        <ProtectedRoute role="admin">
+          <AdminAnalytics />
         </ProtectedRoute>
       } />
 
