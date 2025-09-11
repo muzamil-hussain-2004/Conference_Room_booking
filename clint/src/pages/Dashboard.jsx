@@ -51,6 +51,12 @@ export default function Dashboard() {
             My Bookings
           </button>
           <button
+            className="bg-gray-600 text-white px-6 py-2 rounded hover:bg-gray-700 transition"
+            onClick={() => navigate("/users/me/audit-logs")}
+          >
+            Booking History
+          </button>
+          <button
             className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 transition"
             onClick={() => navigate("/calendar")}
           >

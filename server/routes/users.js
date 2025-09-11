@@ -15,5 +15,19 @@ router.patch('/:id', authenticateToken, authorizeRoles('admin'), usersController
 // disable user (Admin only)
 router.patch('/:id/disable', authenticateToken, authorizeRoles('admin'), usersController.disableUser);
 
+//audit logs
+router.get('/me/audit-logs', authenticateToken, async (req, res) => {
+    const db = require('../db');
+    try {
+        const result = await db.query(
+            `SELECT * FROM audit_logs WHERE user_id = $1 ORDER BY created_at DESC`,
+            [req.user.id]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch audit logs.' });
+    }
+});
+
 
 module.exports = router;

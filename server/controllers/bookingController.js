@@ -105,6 +105,11 @@ exports.editBooking = async (req, res) => {
             `UPDATE bookings SET start_time = $1, end_time = $2 WHERE id = $3 AND user_id = $4`,
             [start_time, end_time, id, req.user.id]
         );
+        await db.query(
+            `INSERT INTO audit_logs (user_id, action, details) VALUES ($1, $2, $3)`,
+            [req.user.id, 'edit_booking', `Booking ${id} updated to ${start_time} - ${end_time}`]
+        );
+
         res.json({ message: 'Booking updated.' });
     } catch (error) {
         res.status(500).json({ error: 'Failed to update booking.' });
@@ -117,6 +122,10 @@ exports.cancelBooking = async (req, res) => {
     try {
         await db.query(`UPDATE bookings SET status = 'cancelled' WHERE id = $1 AND user_id = $2`,
             [id, req.user.id]
+        );
+        await db.query(
+            `INSERT INTO audit_logs (user_id, action, details) VALUES ($1, $2, $3)`,
+            [req.user.id, 'cancel_booking', `Booking ${id} cancelled`]
         );
         res.status(200).json({ message: 'Booking cancelled successfully.' });
     } catch (error) {

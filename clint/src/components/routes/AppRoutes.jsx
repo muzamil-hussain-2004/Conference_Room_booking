@@ -20,6 +20,7 @@ import AdminRoomList from "../Admin/AdminRoomList";
 import AdminBookingList from "../Admin/AdminBookingList";
 import AdminUserBookings from "../Admin/AdminUserBookings";
 import AdminAnalytics from "../Admin/AdminAnalytics";
+import AuditLogList from "../Bookings/AuditLogs";
 
 export default function AppRoutes() {
   return (
@@ -35,6 +36,7 @@ export default function AppRoutes() {
       <Route path="/bookings/new" element={<BookingForm />} />
       <Route path="/bookings" element={<BookingList />} />
       <Route path="/calendar" element={<BookingCalendar />} />
+
 
       <Route path="/admin/users" element={
         <ProtectedRoute role="admin">
@@ -79,6 +81,12 @@ export default function AppRoutes() {
       <Route path="/admin/analytics" element={
         <ProtectedRoute role="admin">
           <AdminAnalytics />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/users/me/audit-logs" element={
+        <ProtectedRoute>
+          <AuditLogList />
         </ProtectedRoute>
       } />
 
