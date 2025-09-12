@@ -3,64 +3,80 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 
 export default function RoomDetail() {
-  const { id } = useParams();
-  const [room, setRoom] = useState(null);
-  const [error, setError] = useState("");
-  const [facilities, setFacilities] = useState([]);
-  const navigate = useNavigate();
+  const { id } = useParams();
+  const [room, setRoom] = useState(null);
+  const [error, setError] = useState("");
+  const [facilities, setFacilities] = useState([]);
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    api.get(`/rooms/${id}`)
-      .then(res => setRoom(res.data))
-      .catch(() => setError("Room not found"));
-  }, [id]);
+  useEffect(() => {
+    api.get(`/rooms/${id}`)
+      .then(res => setRoom(res.data))
+      .catch(() => setError("Room not found"));
+  }, [id]);
 
-  useEffect(() => {
-    api.get(`/facilities/room/${id}`).then(res => setFacilities(res.data));
-  }, [id]);
+  useEffect(() => {
+    api.get(`/facilities/room/${id}`).then(res => setFacilities(res.data));
+  }, [id]);
 
-  const token = localStorage.getItem("token");
-  const handleUnassign = async (facilityId) => {
-    await api.delete(`/facilities/room/${room.id}/${facilityId}`, { headers: { Authorization: `Bearer ${token}` } });
-    setFacilities(facilities.filter(f => f.id !== facilityId));
-  };
+  const token = localStorage.getItem("token");
 
-  if (error) return <div className="text-center py-10">{error}</div>;
-  if (!room) return <div className="text-center py-10">Loading..</div>;
+  const handleUnassign = async (facilityId) => {
+    try {
+      await api.delete(`/facilities/room/${room.id}/${facilityId}`, { headers: { Authorization: `Bearer ${token}` } });
+      setFacilities(facilities.filter(f => f.id !== facilityId));
+    } catch (err) {
+      console.error("Unassign failed", err);
+    }
+  };
 
+  if (error)
+    return <div className="text-center py-16 text-red-600 text-xl font-semibold">{error}</div>;
+  if (!room)
+    return <div className="text-center py-16 text-blue-600 text-lg font-medium">Loading...</div>;
 
-  return (
-    <div className="max-w-xl mx-auto py-10">
-      <div className="bg-white rounded-lg shadow p-6">
-        <img src={room.image_url} alt={room.name} className="w-full h-48 object-cover rounded mb-4" />
-        <h2 className="text-2xl font-bold mb-2">{room.name}</h2>
-        <p className="mb-2">{room.location}</p>
-        <p className="mb-2">Capacity: {room.capacity}</p>
-        <p className="mb-2">{room.description}</p>
-        <h3 className="font-bold mt-4 mb-2">Facilities:</h3>
-        <ul>
-          {facilities.map(f => (
-            <li key={f.name} className="flex items-center justify-between">
-              <span>{f.name}</span>
-              {token && (
-                <button
-                  className="bg-red-600 text-white px-2 py-1 rounded ml-2"
-                  onClick={() => handleUnassign(f.id)}
-                >
-                  Unassign
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mt-4"
-          onClick={() => navigate(`/bookings/new?room_id=${room.id}`)}
-        >
-          Book This Room
-        </button>
-      </div>
-    </div>
-  );
+  return (
+    <div className="max-w-xl mx-auto py-10 px-4">
+      <div className="bg-white rounded-2xl shadow-lg p-8">
+        <img
+          src={room.image_url || "/default-room.jpg"}
+          alt={room.name}
+          className="w-full h-56 object-cover rounded-lg mb-6"
+        />
+        <h2 className="text-3xl font-bold mb-3 text-blue-900">{room.name}</h2>
+        <p className="mb-2 text-gray-700">{room.location}</p>
+        <p className="mb-2 text-gray-700">Capacity: {room.capacity}</p>
+        <p className="mb-6 text-gray-600 whitespace-pre-line">{room.description}</p>
 
+        <h3 className="text-xl font-semibold mb-4 text-blue-800">Facilities:</h3>
+        {facilities.length === 0 ? (
+          <p className="text-gray-500 mb-4">No facilities assigned.</p>
+        ) : (
+          <ul className="space-y-3 mb-6">
+            {facilities.map(f => (
+              <li key={f.id} className="flex items-center justify-between border-b border-gray-200 pb-2">
+                <span className="text-gray-800">{f.name}</span>
+                {token && (
+                  <button
+                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
+                    onClick={() => handleUnassign(f.id)}
+                    aria-label={`Unassign ${f.name}`}
+                  >
+                    Unassign
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <button
+          onClick={() => navigate(`/bookings/new?room_id=${room.id}`)}
+          className="w-full bg-blue-700 hover:bg-blue-800 text-white font-semibold py-3 rounded-lg transition"
+        >
+          Book This Room
+        </button>
+      </div>
+    </div>
+  );
 }

@@ -21,77 +21,85 @@ import AdminBookingList from "../Admin/AdminBookingList";
 import AdminUserBookings from "../Admin/AdminUserBookings";
 import AdminAnalytics from "../Admin/AdminAnalytics";
 import AuditLogList from "../Bookings/AuditLogs";
+import AppLayout from "./Layout";
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password" element={<ResetPassword />} />
-      <Route path="/rooms" element={<Roomlist />} />
-      <Route path="/rooms/:id" element={<RoomDetail />} />
-      <Route path="/bookings/new" element={<BookingForm />} />
-      <Route path="/bookings" element={<BookingList />} />
-      <Route path="/calendar" element={<BookingCalendar />} />
 
-
-      <Route path="/admin/users" element={
-        <ProtectedRoute role="admin">
-          <UserList />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/rooms/new" element={
-        <ProtectedRoute role="admin">
-          <RoomForm />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/facilities/new" element={
-        <ProtectedRoute role="admin">
-          <FacilityForm />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/facilities" element={
-        <ProtectedRoute role="admin">
-          <FacilityList />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/assign-facility" element={
-        <ProtectedRoute role="admin">
-          <AssignFacility />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/rooms" element={
-        <ProtectedRoute role="admin">
-          <AdminRoomList />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/bookings" element={
-        <ProtectedRoute role="admin">
-          <AdminBookingList />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/users/:id/bookings" element={
-        <ProtectedRoute role="admin">
-          <AdminUserBookings />
-        </ProtectedRoute>
-      } />
-      <Route path="/admin/analytics" element={
-        <ProtectedRoute role="admin">
-          <AdminAnalytics />
-        </ProtectedRoute>
-      } />
-
-      <Route path="/users/me/audit-logs" element={
-        <ProtectedRoute>
-          <AuditLogList />
-        </ProtectedRoute>
-      } />
-
-
-      {/* Add other routes later */}
+        {/* All other routes with layout */}
+      <Route
+        path="*"
+        element={
+          <AppLayout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/rooms" element={<Roomlist />} />
+              <Route path="/rooms/:id" element={<RoomDetail />} />
+              <Route path="/bookings/new" element={<BookingForm />} />
+              <Route path="/bookings" element={<BookingList />} />
+              <Route path="/calendar" element={<BookingCalendar />} />
+              <Route path="/users/me/audit-logs" element={
+                <ProtectedRoute>
+                  <AuditLogList />
+                </ProtectedRoute>
+              } />
+              {/* Admin routes */}
+              <Route path="/admin/users" element={
+                <ProtectedRoute role="admin">
+                  <UserList />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/rooms" element={
+                <ProtectedRoute role="admin">
+                  <AdminRoomList />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/rooms/new" element={
+                <ProtectedRoute role="admin">
+                  <RoomForm />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/facilities/new" element={
+                <ProtectedRoute role="admin">
+                  <FacilityForm />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/facilities" element={
+                <ProtectedRoute role="admin">
+                  <FacilityList />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/assign-facility" element={
+                <ProtectedRoute role="admin">
+                  <AssignFacility />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/bookings" element={
+                <ProtectedRoute role="admin">
+                  <AdminBookingList />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/users/:id/bookings" element={
+                <ProtectedRoute role="admin">
+                  <AdminUserBookings />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/analytics" element={
+                <ProtectedRoute role="admin">
+                  <AdminAnalytics />
+                </ProtectedRoute>
+              } />
+              {/* Add other routes as needed */}
+            </Routes>
+          </AppLayout>
+        }
+      />
     </Routes>
   );
 }

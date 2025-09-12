@@ -26,10 +26,14 @@ exports.getRoomById = async (req, res) => {
 //Add room (Admin only)
 exports.addRoom = async (req, res) => {
     const { name, location, capacity, description, image_url } = req.body;
+    let finalImageUrl = image_url;
+    if (req.file) {
+        finalImageUrl = `/uploads/${req.file.filename}`;
+    }
     try {
         const result = await db.query(
             'INSERT INTO rooms (name, location, capacity, description, image_url) VALUES ($1,$2,$3,$4,$5) RETURNING *',
-            [name, location, capacity, description, image_url]
+            [name, location, capacity, description, finalImageUrl]
         );
         res.status(201).json(result.rows[0]);
     } catch (error) {

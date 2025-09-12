@@ -55,5 +55,6 @@ app.use('/users', require('./routes/users'));
 app.use('/rooms', require('./routes/rooms'));
 app.use('/bookings', require('./routes/booking'));
 app.use('/facilities', require('./routes/facilities'));
+app.use('/uploads', express.static('uploads'));
 
 app.listen(3000, () => console.log('server running on port 3000'));
