@@ -26,6 +26,7 @@ import AppLayout from "./Layout";
 export default function AppRoutes() {
   return (
     <Routes>
+       <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -37,7 +38,6 @@ export default function AppRoutes() {
         element={
           <AppLayout>
             <Routes>
-              <Route path="/" element={<Home />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/rooms" element={<Roomlist />} />
               <Route path="/rooms/:id" element={<RoomDetail />} />

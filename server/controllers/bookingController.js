@@ -5,6 +5,10 @@ exports.bookRoom = async (req, res) => {
     const { room_id, start_time, end_time } = req.body;
     const user_id = req.user.id;
 
+    if (new Date(start_time) >= new Date(end_time)) {
+        return res.status(400).json({ error: "End time must be after start time." });
+    }
+
     try {
         // check for overlapping bookings
         const conflict = await db.query(

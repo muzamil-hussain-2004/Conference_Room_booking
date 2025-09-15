@@ -60,10 +60,10 @@ export default function Dashboard() {
     }
   }, [navigate]);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem("token");
+  //   navigate("/login");
+  // };
 
   return (
     <main
@@ -113,12 +113,12 @@ export default function Dashboard() {
           </>
         )}
 
-        <button
+        {/* <button
           onClick={handleLogout}
           className="mt-16 px-10 py-3 bg-blue-900 rounded-full font-semibold text-white shadow-lg hover:bg-blue-800 transition"
         >
           Logout
-        </button>
+        </button> */}
       </section>
     </main>
   );

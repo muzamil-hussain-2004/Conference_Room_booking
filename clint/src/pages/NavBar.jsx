@@ -9,10 +9,11 @@ export default function Navbar({ role }) {
   };
 
   return (
+    
     <nav className="bg-blue-800 text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
       {/* Left side: Logo and main navigation links */}
       <div className="flex items-center space-x-8">
-        <Link to="/" className="font-extrabold text-2xl hover:text-blue-300 transition">
+        <Link to="/dashboard" className="font-extrabold text-2xl hover:text-blue-300 transition">
           RoomBooking
         </Link>
         <Link to="/rooms" className="hover:text-blue-300 transition font-medium">
@@ -34,6 +35,12 @@ export default function Navbar({ role }) {
             </Link>
             <Link to="/admin/users" className="hover:text-blue-300 transition font-medium">
               Users
+            </Link>
+            <Link to="/admin/facilities" className="hover:text-blue-300 transition font-medium">
+              Facilities
+            </Link>
+              <Link to="/admin/assign-facility" className="hover:text-blue-300 transition font-medium">
+              Assign Facilities
             </Link>
           </>
         )}

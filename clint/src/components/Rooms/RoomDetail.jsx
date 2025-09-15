@@ -2,12 +2,26 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import api from "../utils/api";
 
+
+function getUserRole() {
+    const token = localStorage.getItem("token");
+    if (!token) return null;
+    try {
+      return JSON.parse(atob(token.split('.')[1])).role;  
+    } catch (error) {
+        return null;
+    }
+    
+}
+
 export default function RoomDetail() {
   const { id } = useParams();
   const [room, setRoom] = useState(null);
   const [error, setError] = useState("");
   const [facilities, setFacilities] = useState([]);
   const navigate = useNavigate();
+
+const role = getUserRole();
 
   useEffect(() => {
     api.get(`/rooms/${id}`)
@@ -53,21 +67,21 @@ export default function RoomDetail() {
           <p className="text-gray-500 mb-4">No facilities assigned.</p>
         ) : (
           <ul className="space-y-3 mb-6">
-            {facilities.map(f => (
-              <li key={f.id} className="flex items-center justify-between border-b border-gray-200 pb-2">
-                <span className="text-gray-800">{f.name}</span>
-                {token && (
-                  <button
-                    className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
-                    onClick={() => handleUnassign(f.id)}
-                    aria-label={`Unassign ${f.name}`}
-                  >
-                    Unassign
-                  </button>
-                )}
-              </li>
-            ))}
-          </ul>
+    {facilities.map(f => (
+      <li key={f.id} className="flex items-center justify-between border-b border-gray-200 pb-2">
+        <span className="text-gray-800">{f.name}</span>
+        {role === "admin" && (
+          <button
+            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
+            onClick={() => handleUnassign(f.id)}
+            aria-label={`Unassign ${f.name}`}
+          >
+            Unassign
+          </button>
+        )}
+      </li>
+    ))}
+  </ul>
         )}
 
         <button
