@@ -6,35 +6,35 @@ const db = require('./db');
 const cron = require('node-cron');
 const sendEmail = require('./utils/sendEmail');
 
-cron.schedule('*/10 * * * *', async () => {
-    //for sendind reminder emails 
+// cron.schedule('*/10 * * * *', async () => {
+//     //for sendind reminder emails 
 
-    const now = new Date();
-    const soon = new Date(now.getTime() + 60 * 60 * 1000);
-    const result = await db.query(
-        `SELECT bookings.id, users.email, rooms.name, bookings.start_time
-        FROM bookings
-        JOIN users ON bookings.user_id = users.id
-        JOIN rooms ON bookings.room_id = rooms.id
-        WHERE bookings.status = 'confirmed'
-        AND bookings.start_time > $1 AND bookings.start_time <= $2`,
-        [now.toISOString(), soon.toISOString()]
-    );
-    for (const b of result.rows) {
-        await sendEmail(
-            b.email,
-            'Booking Reminder',
-            `Reminder: Your booking for room "${b.name}" starts at ${new Date(b.start_time).toLocalString}`
-        );
-        // optionally log notification in db
-        await db.query(
-            `INSERT INTO notifications (user_id, booking_id, type, message, sent_at)
-            VALUES ($1, $2, 'reminder', $3, NOW())`,
-            [b.user_id, b.id, `Reminder: sent for booking at ${b.start_time}`]
-        );
-    }
+//     const now = new Date();
+//     const soon = new Date(now.getTime() + 60 * 60 * 1000);
+//     const result = await db.query(
+//         `SELECT bookings.id, users.email, rooms.name, bookings.start_time
+//         FROM bookings
+//         JOIN users ON bookings.user_id = users.id
+//         JOIN rooms ON bookings.room_id = rooms.id
+//         WHERE bookings.status = 'confirmed'
+//         AND bookings.start_time > $1 AND bookings.start_time <= $2`,
+//         [now.toISOString(), soon.toISOString()]
+//     );
+//     for (const b of result.rows) {
+//         await sendEmail(
+//             b.email,
+//             'Booking Reminder',
+//             `Reminder: Your booking for room "${b.name}" starts at ${new Date(b.start_time).toLocalString}`
+//         );
+//         // optionally log notification in db
+//         await db.query(
+//             `INSERT INTO notifications (user_id, booking_id, type, message, sent_at)
+//             VALUES ($1, $2, 'reminder', $3, NOW())`,
+//             [b.user_id, b.id, `Reminder: sent for booking at ${b.start_time}`]
+//         );
+//     }
 
-});
+// });
 
 app.use(cors());
 

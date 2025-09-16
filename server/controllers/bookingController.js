@@ -21,7 +21,7 @@ exports.bookRoom = async (req, res) => {
         const result = await db.query(
             `INSERT INTO bookings (user_id, room_id, start_time, end_time, status)
             VALUES ($1,$2,$3,$4, 'confirmed') RETURNING *`,
-            [user_id, room_id, start_time, end_time]
+            [user_id, room_id, new Date(start_time).toISOString(), new Date(end_time).toISOString()]
         );
 
         // Get user email and room name for confirmation

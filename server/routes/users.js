@@ -4,6 +4,8 @@ const usersController = require('../controllers/usersController');
 const authenticateToken  = require('../middleware/auth');
 const authorizeRoles = require('../middleware/roles'); 
 
+const { getMe } = require("../controllers/usersController");
+const auth = require("../middleware/auth");
 
 //get all users (Admin only)
 router.get('/', authenticateToken, authorizeRoles('admin'), usersController.getAllUsers);
@@ -28,6 +30,9 @@ router.get('/me/audit-logs', authenticateToken, async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch audit logs.' });
     }
 });
+
+//profile
+router.get("/me", auth, getMe);
 
 
 module.exports = router;

@@ -57,3 +57,19 @@ exports.getUserBookings = async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch bookings.' });
     }
 };
+
+exports.getMe = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const result = await db.query(
+            `SELECT users.id, users.email, users.name, users.is_active, roles.name AS role
+            FROM users JOIN roles ON users.role_id = roles.id
+            WHERE users.id = $1`,
+            [userId]
+        );
+        if (!result.rows.length) return res.status(404).json({ error: "User not found." });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch user.' });
+    }
+};

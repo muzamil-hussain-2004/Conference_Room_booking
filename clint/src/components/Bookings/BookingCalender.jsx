@@ -63,7 +63,7 @@ export default function BookingCalendar() {
                                 <span className="text-gray-700 text-sm">
                                     {new Date(b.start_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} to {new Date(b.end_time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                                 </span>
-                            </li>
+                              </li>
                         ))}
                     </ul>
                 )}

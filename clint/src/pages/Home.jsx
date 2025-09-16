@@ -11,45 +11,41 @@ export default function Home() {
         backgroundSize: "110%", // zoom to hide white lines
       }}
     >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/40" />
+      {/* Dark overlay for better contrast */}
+      <div className="absolute inset-0 bg-black/50" />
 
-      {/* Transparent container */}
-      <div className="relative z-10 bg-white/20 backdrop-blur-xl 
-                      p-6 sm:p-10 rounded-2xl shadow-lg text-center 
-                      w-[90%] sm:w-full max-w-xl">
+      {/* Transparent, blurred container */}
+      <div
+        className="relative z-10 bg-white/25 backdrop-blur-md p-8 sm:p-12 rounded-3xl shadow-xl max-w-lg w-[90%] text-center"
+      >
         {/* Heading */}
-        <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 text-white drop-shadow-lg">
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-6 text-white drop-shadow-xl">
           Conference Room Booking
         </h1>
 
         {/* Subheading */}
-        <p className="mb-6 text-gray-200 text-base sm:text-lg">
+        <p className="mb-8 text-gray-200 text-lg sm:text-xl font-light">
           Book your meeting rooms easily and efficiently.
         </p>
 
         {/* Buttons */}
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-5 sm:flex-row sm:justify-center sm:gap-6">
           <button
-            className="w-full bg-blue-500/80 hover:bg-blue-600/90 
-                       text-white px-6 py-2 rounded-lg transition 
-                       font-semibold shadow-md"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full transition font-semibold shadow-lg"
             onClick={() => navigate("/login")}
           >
             Login
           </button>
           <button
-            className="w-full bg-emerald-500/80 hover:bg-emerald-600/90 
-                       text-white px-6 py-2 rounded-lg transition 
-                       font-semibold shadow-md"
+            className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-full transition font-semibold shadow-lg"
             onClick={() => navigate("/register")}
           >
             Register
           </button>
         </div>
 
-        {/* Footer text */}
-        <div className="mt-6 text-sm text-gray-200">
+        {/* Footer */}
+        <div className="mt-10 text-sm text-gray-300 font-light">
           Secure & Reliable Booking System
         </div>
       </div>

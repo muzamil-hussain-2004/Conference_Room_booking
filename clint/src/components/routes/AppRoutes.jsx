@@ -22,6 +22,8 @@ import AdminUserBookings from "../Admin/AdminUserBookings";
 import AdminAnalytics from "../Admin/AdminAnalytics";
 import AuditLogList from "../Bookings/AuditLogs";
 import AppLayout from "./Layout";
+import RoomFormEditWrapper from "../routes/EditWrapper";
+import UserProfile from "../../pages/userProfile";
 
 export default function AppRoutes() {
   return (
@@ -38,6 +40,18 @@ export default function AppRoutes() {
         element={
           <AppLayout>
             <Routes>
+            <Route path="/profile" element={<ProtectedRoute><UserProfile /></ProtectedRoute>} />
+               <Route path="/admin/rooms/new" element={
+                <ProtectedRoute role="admin">
+                  <RoomForm  onSuccess={() => navigate("/admin/rooms")} />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/rooms/:id/edit" element={
+                <ProtectedRoute role="admin">
+                  <RoomFormEditWrapper />
+                </ProtectedRoute>
+              } />
+
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/rooms" element={<Roomlist />} />
               <Route path="/rooms/:id" element={<RoomDetail />} />

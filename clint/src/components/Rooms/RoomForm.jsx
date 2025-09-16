@@ -45,7 +45,7 @@ export default function RoomForm({ initial = {}, onSuccess }) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-lg max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="bg-white p-8 rounded-2xl shadow-lg max-w-md mx-auto mt-8 mb-8">
             <h2 className="text-2xl font-bold mb-6 text-blue-800">{initial.id ? "Edit Room" : "Add Room"}</h2>
             {error && <div className="mb-4 text-red-500 font-medium">{error}</div>}
 
